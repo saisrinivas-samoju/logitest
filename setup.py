@@ -20,6 +20,7 @@ setup(
     install_requires=[
         'pytest',   # Used for running generated tests
         'joblib',   # For serialization
+        'dill',
     ],
     entry_points={
         'console_scripts': [
