@@ -38,4 +38,4 @@ type_handlers = {
 ASSERTION_MAPPING = {
     "pandas.core.frame.DataFrame": ("import pandas.testing as pd_testing", "pd_testing.assert_frame_equal"),
     "numpy.ndarray": ("import numpy.testing as np_testing", "np_testing.assert_array_equal"),
-} 
+}
