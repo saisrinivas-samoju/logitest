@@ -43,8 +43,7 @@ dump_pdf = lambda doc, filepath: doc.save(filepath)
 ```py
 # To know the datatype of the object, load a sample object and check like this:
 
-doc = load_pdf("C:/Users/samoj/Downloads/COA requirements.pdf")
-# doc = load_pdf("./COA requirements.pdf")
+doc = load_pdf("./COA requirements.pdf")
 
 get_dtype(doc) # This will be used as the key for your new_type_handlers dictionary
 ```
