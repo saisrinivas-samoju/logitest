@@ -116,9 +116,10 @@ def create_test_cases_cli():
     Usage: logitest <module_dirpath>
     """
     if len(sys.argv) < 2:
-        print("Usage: logitest <module_dirpath>")
+        print("Usage: logitest <module_dirpath> [<main_filepath>]")
         sys.exit(1)
-    
+
     module_dirpath = sys.argv[1]
-    exit_code = create_test_cases(module_dirpath)
+    main_filepath = sys.argv[2] if len(sys.argv) > 2 else None
+    exit_code = create_test_cases(module_dirpath, main_filepath)
     sys.exit(exit_code)
