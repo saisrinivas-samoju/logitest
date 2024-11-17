@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import subprocess
 
-from logitest.helper import clean_directory, make_type_handler_data
+from logitest.helper import clean_directory, separate_contents_with_ast
 from logitest.insert_decorators import insert_decorators, insert_decorators_to_file
 from logitest.create_conftest import create_conftest
 from logitest.generate_tests import generate_tests, get_path_dict
@@ -30,6 +30,30 @@ from logitest.del_pycache import del_pycache
 #         with open(conftest_path, 'w') as f:
 #             f.write(conftest_content)
 #         print(f"Created conftest.py at {conftest_path}")
+
+def get_dtype(obj):
+    return str(type(obj).__module__) + '.' + type(obj).__name__
+
+def add_to_config(type_handling_str="", assertion_mapping_str=""):
+    if type_handling_str:
+        type_handling_str = type_handling_str + "\n\ntype_handlers = type_handlers | new_type_handlers"
+
+    if assertion_mapping_str:
+        assertion_mapping_str = assertion_mapping_str + "\n\nASSERTION_MAPPING = ASSERTION_MAPPING | new_assertion_mapping"
+    
+    with open("logitest/config.py", 'r') as f:
+        existing_txt = f.read()
+        
+    full_config_text = "\n".join([existing_txt, type_handling_str, assertion_mapping_str])
+        
+    new_config = separate_contents_with_ast(full_config_text)
+    
+    new_config_text = "\n\n\n".join(filter(None, ["\n".join(new_config.get('imports', [])), "\n\n".join(new_config.get('functions', [])), "\n\n".join(new_config.get('lambdas', [])), "\n\n".join(new_config.get('variable_assignments', []))]))
+    
+    with open("logitest/config.py", 'w') as f:
+        f.write(new_config_text)
+    
+    return "Added custom code to config"
 
 def create_test_cases(module_dirpath, main_filepath=None):
     

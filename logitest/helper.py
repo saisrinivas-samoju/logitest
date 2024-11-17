@@ -2,6 +2,7 @@ import os
 import json
 from pathlib import Path
 from collections.abc import Iterable
+import ast
 import importlib
 # import pytest
 # from config import ASSERTION_MAPPING
@@ -34,6 +35,107 @@ def make_type_handler_data(data):
                 raise Exception("""RequiredKeysAreNotPresent: required keys -> ["object", "extension", "load", "dump"]""")
         else:
             raise Exception("InvalidRecord")
+
+# def separate_contents_with_ast(input_string):
+#     tree = ast.parse(input_string)
+
+#     imports = []
+#     functions = []
+#     lambdas = []
+#     variable_assignments = []
+
+#     class CodeAnalyzer(ast.NodeVisitor):
+#         def visit_Import(self, node):
+#             imports.append(f"import {', '.join(alias.name for alias in node.names)}")
+        
+#         def visit_ImportFrom(self, node):
+#             module = node.module if node.module else ''
+#             imports.append(f"from {module} import {', '.join(alias.name for alias in node.names)}")
+
+#         def visit_FunctionDef(self, node):
+#             func_code = f"def {node.name}({', '.join(arg.arg for arg in node.args.args)}):"
+#             body_lines = ast.get_source_segment(input_string, node).split("\n")[1:]
+#             functions.append(func_code + "\n" + "\n".join(body_lines))
+        
+#         def visit_Assign(self, node):
+#             targets = [ast.get_source_segment(input_string, target) for target in node.targets]
+#             value = ast.get_source_segment(input_string, node.value)
+#             assignment = f"{' = '.join(targets)} = {value}"
+#             if isinstance(node.value, ast.Lambda):
+#                 lambdas.append(assignment)
+#             else:
+#                 variable_assignments.append(assignment)
+
+#     analyzer = CodeAnalyzer()
+#     analyzer.visit(tree)
+
+#     return {
+#         "imports": imports,
+#         "functions": functions,
+#         "lambdas": lambdas,
+#         "variable_assignments": variable_assignments
+#     }
+
+def separate_contents_with_ast(input_string):
+    tree = ast.parse(input_string)
+
+    imports = []
+    functions = []
+    lambdas = []
+    variable_assignments = []
+
+    class CodeAnalyzer(ast.NodeVisitor):
+        def visit_Import(self, node):
+            for alias in node.names:
+                if alias.asname:
+                    imports.append(f"import {alias.name} as {alias.asname}")
+                else:
+                    imports.append(f"import {alias.name}")
+        
+        def visit_ImportFrom(self, node):
+            module = node.module if node.module else ''
+            for alias in node.names:
+                if alias.asname:
+                    imports.append(f"from {module} import {alias.name} as {alias.asname}")
+                else:
+                    imports.append(f"from {module} import {alias.name}")
+
+        def visit_FunctionDef(self, node):
+            func_code = f"def {node.name}({', '.join(arg.arg for arg in node.args.args)}):"
+            body_lines = ast.get_source_segment(input_string, node).split("\n")[1:]
+            functions.append(func_code + "\n" + "\n".join(body_lines))
+        
+        def visit_Assign(self, node):
+            targets = [ast.get_source_segment(input_string, target) for target in node.targets]
+            value = ast.get_source_segment(input_string, node.value)
+            assignment = f"{' = '.join(targets)} = {value}"
+            if isinstance(node.value, ast.Lambda):
+                lambdas.append(assignment)
+            else:
+                variable_assignments.append(assignment)
+
+    analyzer = CodeAnalyzer()
+    analyzer.visit(tree)
+
+    return {
+        "imports": imports,
+        "functions": functions,
+        "lambdas": lambdas,
+        "variable_assignments": variable_assignments
+    }
+    
+def merge_dicts(*dicts):
+    merged_dict = {}
+    
+    for d in dicts:
+        for key, value in d.items():
+            if key in merged_dict:
+                # Merge values, ensuring uniqueness and handling lists
+                merged_dict[key] = list(dict.fromkeys(merged_dict[key] + value))
+            else:
+                merged_dict[key] = value.copy() if isinstance(value, list) else [value]
+    
+    return merged_dict
 
 def unique_dicts(dicts):
     unique_set = set()
