@@ -1,28 +1,28 @@
-# logitest
+# logitest <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Panda.png" alt="Panda" width="25" height="25" />
 A lightweight module for logging and testing. No fluff, just tools to get the job done efficiently.
 
-## Installation
+## Installation <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Diamond%20with%20a%20Dot.png" alt="Diamond with a Dot" width="25" height="25" />
 ```bash
 pip install logitest
 ```
 
-## Running in terminal
+## Running in terminal <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Man%20Running.png" alt="Man Running" width="25" height="25" />
 ```bash
 logitest examples/example_module examples/main.py
 ```
 
-## Running in python
+## Running in python <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Running.png" alt="Person Running" width="25" height="25" />
 ```py
 from logitest import create_test_cases
 
 create_test_cases(module_dirpath = "examples/example_module", main_filepath="examples/main.py")
 ```
 
-## Sample code to generate test cases when you have custom I/O objects
+## Sample code to generate test cases when you have custom I/O objects <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Swimming.png" alt="Person Swimming" width="25" height="25" />
 
-If you have external objects (non in-built python objects) as input/output in our functions/methods. Here is how you need to configure the module before trying to get the test cases.
+If you have external objects (non in-built python objects) as input/output in your functions/methods. Here is how you need to configure the module before trying to get the test cases.
 
-### Add custom type handlers
+### Add custom type handlers <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Check%20Mark%20Button.png" alt="Check Mark Button" width="20" height="20" />
 
 ```py
 from logitest import get_dtype, add_to_config
@@ -37,7 +37,7 @@ def load_pdf(filepath):
     doc = fitz.open(filepath)
     return doc
 
-dump_pdf = lambda doc, filepath: doc.save(filepath)
+dump_pdf = lambda doc, filepath: doc.save(filepath) # Flexible to lambda functions as well
 ```
 
 ```py
@@ -55,7 +55,7 @@ get_dtype(doc) # This will be used as the key for your new_type_handlers diction
 
 new_type_handlers = {
     "pymupdf.Document": {
-        "extension": ".npy", 
+        "extension": ".pdf", 
         "load": load_pdf, 
         "dump": dump_pdf
     }
@@ -75,19 +75,19 @@ dump_pdf = lambda doc, filepath: doc.save(filepath)
 
 new_type_handlers = {
     "pymupdf.Document": {
-        "extension": ".npy", 
+        "extension": ".pdf", 
         "load": load_pdf, 
         "dump": dump_pdf
     }
 }"""
 ```
 
-### Add custom Assertion mappings
+### Add custom Assertion mappings <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Check%20Mark%20Button.png" alt="Check Mark Button" width="20" height="20" />
 
 ```py
-# If you have any custom assert functions to load, follow this process
+# If you have any custom assert functions to use in pytest, follow this process:
 
-# First create your custom assert function
+# First create your custom assert function with required imports and global variables
 
 import fitz  # PyMuPDF
 
@@ -119,15 +119,16 @@ def assert_documents_equal(doc1_path, doc2_path, tolerance=0):
 # Create a new assertion mapping dictionary
 # Note, the name of this dictionary should new_assertion_mapping
 
-new_assertion_mapping = {"pymupdf.Document": ( # key is as usual the object it can test
-    "from logitest.config import assert_documents_equal", # standard import statement to import the custom function
-    "assert_documents_equal" # custom function name
+new_assertion_mapping = {
+    "pymupdf.Document": ( # key is as usual the object it can test
+        "from logitest.config import assert_documents_equal", # standard import statement to import the custom function; as this functions goes to config
+        "assert_documents_equal" # custom function name
     )
 }
 ```
 
 ```py
-# Now add this entire code in triple quotes like this:
+# Now add this entire code in triple quotes:
 
 assertion_mapping_str = """import fitz  # PyMuPDF
 
@@ -158,7 +159,7 @@ new_assertion_mapping = {"pymupdf.Document": ("from logitest.config import asser
 """
 ```
 
-### Adding custom code to config
+### Adding custom code to config <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Check%20Mark%20Button.png" alt="Check Mark Button" width="20" height="20" />
 
 ```py
 # The final line for configuring the module
@@ -166,7 +167,7 @@ new_assertion_mapping = {"pymupdf.Document": ("from logitest.config import asser
 add_to_config(type_handling_str=type_handler_str, assertion_mapping_str=assertion_mapping_str)
 ```
 
-### Create and run tests
+### Create and run tests <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Person%20Surfing.png" alt="Person Surfing" width="25" height="25" />
 ```py
 # Finally to create the test cases for your code
 
@@ -176,10 +177,22 @@ from logitest import create_test_cases
 create_test_cases(module_dirpath = "examples/example_module", main_filepath="examples/main.py")
 ```
 
-## Contributing
+## Show your support <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands%20Medium-Light%20Skin%20Tone.png" alt="Heart Hands Medium-Light Skin Tone" width="25" height="25" />
 
-Feel free to fork the repo and submit pull requests. Contributions are always welcome!
+Be sure to drop a <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Glowing%20Star.png" alt="Glowing Star" width="25" height="25" /> if you like the project!
 
-## License
+## Contributing <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Folded%20Hands%20Light%20Skin%20Tone.png" alt="Folded Hands Light Skin Tone" width="25" height="25" />
+
+Contributions, issues and feature requests are always welcome!
+
+Feel free to check the [issues page](https://github.com/saisrinivas-samoju/logitest/issues).
+
+## Author <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Hugging%20Face.png" alt="Hugging Face" width="25" height="25" />
+
+**[Sai Srinivas](https://linkedin.com/in/sai-srinivas-samoju)** <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People%20with%20professions/Technologist%20Light%20Skin%20Tone.png" alt="Technologist Light Skin Tone" width="25" height="25" />
+
+## License <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20with%20Curl.png" alt="Page with Curl" width="25" height="25" />
 
 This project is licensed under the [MIT License](https://github.com/saisrinivas-samoju/langchain_training/blob/main/LICENSE)
+
+<!-- https://animated-fluent-emoji.vercel.app/ -->
